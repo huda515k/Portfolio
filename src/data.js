@@ -6,8 +6,7 @@ export const PROFILE = {
   tagline: 'Building products that ship.',
   intro:
     'Web, mobile, and intelligent systems for startups that need speed without sacrificing craft.',
-  // TODO: replace with Rabeea's real email before deploying
-  email: 'rabeea@example.com',
+  email: 'dev.rabeea@gmail.com',
   phone: '+92 304-8111212',
   address: 'Office 276B, Phase 4 DHA, Lahore',
   linkedin: 'https://www.linkedin.com/in/rabeea-r26/',

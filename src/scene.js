@@ -160,8 +160,11 @@ export function createScene(canvas, { reducedMotion = false } = {}) {
   const state = { mx: 0, my: 0, tmx: 0, tmy: 0, scroll: 0, shift: 0, tShift: 0, layout: 'wide' };
 
   function layoutFor(w) { return w < 700 ? 'narrow' : w < 1100 ? 'mid' : 'wide'; }
+  // The canvas is always full-screen, so size from the window, not from the canvas's
+  // CSS box. If the stylesheet arrives after this script (it can on a CDN), the canvas
+  // still has its default 300x150 size at this point and everything would render tiny.
   function resize() {
-    const w = canvas.clientWidth, h = canvas.clientHeight;
+    const w = window.innerWidth, h = window.innerHeight;
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
@@ -175,6 +178,9 @@ export function createScene(canvas, { reducedMotion = false } = {}) {
   };
   window.addEventListener('pointermove', onMove, { passive: true });
   window.addEventListener('resize', resize);
+  // Also re-measure whenever the canvas box itself changes (stylesheet load, mobile toolbars)
+  const ro = new ResizeObserver(resize);
+  ro.observe(canvas);
 
   const clock = new THREE.Clock();
   let raf = 0, running = true;
@@ -240,6 +246,7 @@ export function createScene(canvas, { reducedMotion = false } = {}) {
       running = false; cancelAnimationFrame(raf);
       window.removeEventListener('pointermove', onMove);
       window.removeEventListener('resize', resize);
+      ro.disconnect();
       document.removeEventListener('visibilitychange', onVis);
       renderer.dispose();
     },

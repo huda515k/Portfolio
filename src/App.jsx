@@ -88,7 +88,11 @@ function SceneCanvas() {
     sections.forEach((s) => sectionIO.observe(s));
     return () => { window.removeEventListener('scroll', onScroll); sectionIO.disconnect(); api.dispose(); };
   }, []);
-  return <canvas ref={ref} className="scene" aria-hidden="true" />;
+  // Inline size so the canvas is full-screen even before styles.css has loaded
+  return (
+    <canvas ref={ref} className="scene" aria-hidden="true"
+      style={{ position: 'fixed', inset: 0, width: '100vw', height: '100vh', zIndex: 0, pointerEvents: 'none' }} />
+  );
 }
 
 /* ---------------- Nav ---------------- */
