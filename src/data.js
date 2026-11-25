@@ -32,7 +32,7 @@ export const bookDemoUrl = () =>
 
 export const ABOUT = [
   `I'm ${PROFILE.name}, a Full-Stack & AI Engineer helping startups go from concept to working AI products in weeks, not months.`,
-  'With over 7 years of hands-on experience, I specialize in building modern websites, mobile apps, SaaS platforms, and AI-driven MVPs that accelerate business growth. I design and develop AI agents, LLM-powered chatbots, and automation workflows that bring intelligence and efficiency to digital products.',
+  'With over 6 years of hands-on experience, I specialize in building modern websites, mobile apps, SaaS platforms, and AI-driven MVPs that accelerate business growth. I design and develop AI agents, LLM-powered chatbots, and automation workflows that bring intelligence and efficiency to digital products.',
   'From crafting scalable SaaS systems to delivering interactive dashboards and custom AI integrations, I help founders turn ideas into revenue-generating realities. My work has empowered teams across the US, UK, and beyond, saving them hours of manual effort and unlocking new levels of productivity.',
   "I'm passionate about building meaningful tech that solves real-world problems and creates lasting impact. When I'm not coding, I'm exploring new innovations, learning emerging AI trends, and finding creative inspiration through travel.",
 ];
@@ -45,7 +45,7 @@ export const SKILLS = [
 
 export const STATS = [
   { value: 71, suffix: '', label: 'Projects shipped' },
-  { value: 7, suffix: '+', label: 'Years experience' },
+  { value: 6, suffix: '+', label: 'Years experience' },
   { value: 92, suffix: '', label: 'Happy clients' },
 ];
 

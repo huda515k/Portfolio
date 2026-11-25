@@ -42,7 +42,7 @@ h2 { font-size: clamp(30px, 4.2vw, 52px); line-height: 1.05; font-weight: 600; }
 }
 main, .footer, .nav { position: relative; z-index: 2; }
 .wrap { max-width: 1240px; margin: 0 auto; }
-.band { padding: clamp(72px, 10vw, 140px) max(5vw, 18px); }
+.band { padding: clamp(36px, 4.5vw, 64px) max(5vw, 18px); }
 .kicker {
   display: inline-flex; align-items: center; gap: 10px; margin: 0 0 18px;
   color: var(--cerulean-hi); font-weight: 700; font-size: 15px;
@@ -170,7 +170,7 @@ main, .footer, .nav { position: relative; z-index: 2; }
 .stat span { color: var(--muted); font-weight: 600; }
 
 /* ---------- Section head ---------- */
-.section-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 420px); gap: 30px; align-items: end; margin-bottom: clamp(40px, 6vw, 70px); }
+.section-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 420px); gap: 30px; align-items: end; margin-bottom: clamp(28px, 4vw, 48px); }
 .section-head > p { margin: 0; color: var(--muted); }
 
 /* ---------- Services ring ---------- */
