@@ -1,5 +1,17 @@
 // All site content lives here. Edit this file to update the portfolio.
 
+// Real screenshots of each project (800x500 WebP), bundled by Vite so they never 404
+import imgTalentlens from './assets/projects/talentlens.webp';
+import imgSitechat from './assets/projects/sitechat.webp';
+import imgLegal from './assets/projects/legal.webp';
+import imgScholarai from './assets/projects/scholarai.webp';
+import imgBluebook from './assets/projects/bluebook.webp';
+import imgStratum from './assets/projects/stratum.webp';
+import imgEdvenity from './assets/projects/edvenity.webp';
+import imgVisionx from './assets/projects/visionx.webp';
+import imgSooqsense from './assets/projects/sooqsense.webp';
+
+
 export const PROFILE = {
   name: 'Rabeea',
   role: 'Full Stack Developer & AI/ML Engineer',
@@ -88,6 +100,8 @@ export const SERVICES = [
 export const PROJECTS = [
   {
     id: 'talentlens',
+    image: imgTalentlens,
+    host: 'talent-lens-ai-weld.vercel.app',
     title: 'TalentLens AI',
     kind: 'ai',
     hue: [205, 330],
@@ -108,6 +122,8 @@ export const PROJECTS = [
   },
   {
     id: 'sitechat',
+    image: imgSitechat,
+    host: 'website-rag-chat-bott.vercel.app',
     title: 'Website RAG Chatbot',
     kind: 'ai',
     hue: [190, 260],
@@ -128,6 +144,8 @@ export const PROJECTS = [
   },
   {
     id: 'legal',
+    image: imgLegal,
+    host: 'legal-contract-intelligence-rag.vercel.app',
     title: 'LegalIntelligence',
     kind: 'ai',
     hue: [330, 220],
@@ -147,27 +165,9 @@ export const PROJECTS = [
     links: [{ label: 'Live demo', url: 'https://legal-contract-intelligence-rag.vercel.app/' }],
   },
   {
-    id: 'prospectra',
-    title: 'Prospectra',
-    kind: 'ai',
-    hue: [340, 200],
-    summary:
-      'Turns a single keyword into a clean, de-duplicated, AI-scored list of hiring-intent leads, with a transparent reason trail for every score.',
-    detail:
-      'A zero-cost, production-ready lead pipeline: multi-source collection, semantic scoring with embeddings, email enrichment, and AI-drafted outreach. Stateless, bring-your-own-key, and retains no user data.',
-    features: [
-      'Leads from RemoteOK, Arbeitnow, Remotive, and Jobicy normalized into one schema',
-      'Distinctive-word keyword matching and de-duplication on company + role',
-      'Company email enrichment via Hunter.io with confidence scores',
-      'Four-signal 0 to 100 scoring: semantic relevance, keyword, seniority, remote eligibility',
-      'AI-drafted personalized outreach hook per lead',
-      'Animated lead cards, spreadsheet view, and one-click CSV export',
-    ],
-    stack: ['React', 'Vite', 'GSAP', 'Node.js', 'Express', 'OpenAI', 'Gemini', 'Embeddings', 'Hunter.io', 'Render', 'Vercel'],
-    links: [{ label: 'Live demo', url: 'https://prospectra-lead-generation-automati.vercel.app/' }],
-  },
-  {
     id: 'scholarai',
+    image: imgScholarai,
+    host: 'github.com/DevNebula300/Multi_Agent_Research_Assistant',
     title: 'ScholarAI',
     kind: 'oss',
     hue: [215, 300],
@@ -188,6 +188,8 @@ export const PROJECTS = [
   },
   {
     id: 'bluebook',
+    image: imgBluebook,
+    host: 'github.com/DevNebula300/rag-chatbot',
     title: 'Support Chatbot',
     kind: 'oss',
     hue: [200, 160],
@@ -208,6 +210,8 @@ export const PROJECTS = [
   },
   {
     id: 'stratum',
+    image: imgStratum,
+    host: 'github.com/DevNebula300/Stratum',
     title: 'Stratum',
     kind: 'oss',
     hue: [280, 200],
@@ -228,6 +232,8 @@ export const PROJECTS = [
   },
   {
     id: 'edvenity',
+    image: imgEdvenity,
+    host: 'edvenity.com',
     title: 'Edvenity',
     kind: 'platform',
     hue: [190, 330],
@@ -247,6 +253,8 @@ export const PROJECTS = [
   },
   {
     id: 'visionx',
+    image: imgVisionx,
+    host: 'visionx.io',
     title: 'VisionX',
     kind: 'platform',
     hue: [210, 350],
@@ -266,6 +274,8 @@ export const PROJECTS = [
   },
   {
     id: 'sooqsense',
+    image: imgSooqsense,
+    host: 'sooqsense.com',
     title: 'SooqSense',
     kind: 'platform',
     hue: [320, 210],

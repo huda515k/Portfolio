@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { createScene } from './scene.js';
 import {
   PROFILE, ABOUT, SKILLS, STATS, MARQUEE, TECH_CLOUD, SERVICES, PROJECTS, FILTERS, bookDemoUrl,
@@ -412,7 +412,54 @@ function Orb({ hue, seed }) {
   );
 }
 
+// Real project screenshot inside a themed browser window. Falls back to the orb art if the image ever fails.
+function Shot({ p, seed, eager = false }) {
+  const [failed, setFailed] = useState(false);
+  if (failed || !p.image) return <Orb hue={p.hue} seed={seed} />;
+  return (
+    <figure className="shot">
+      <div className="shot-bar" aria-hidden="true"><i /><i /><i /><span>{p.host}</span></div>
+      <img src={p.image} alt={`${p.title} screenshot`} width="800" height="500"
+        loading={eager ? 'eager' : 'lazy'} decoding="async" onError={() => setFailed(true)} />
+    </figure>
+  );
+}
+
 const KIND_LABEL = { ai: 'AI product', platform: 'Platform', oss: 'Open source' };
+
+// One row of tags: shows as many as fit the card's width, then a "+N" chip for the rest,
+// so every card's tag row is the same height and lines up with its neighbours.
+function FitTags({ items }) {
+  const ref = useRef(null);
+  useLayoutEffect(() => {
+    const ul = ref.current;
+    const fit = () => {
+      const tags = [...ul.querySelectorAll('li.t')];
+      const more = ul.querySelector('li.more');
+      tags.forEach((li) => { li.hidden = false; });
+      more.hidden = true;
+      if (ul.scrollWidth <= ul.clientWidth) return;
+      more.hidden = false;
+      let hiddenCount = 0;
+      for (let i = tags.length - 1; i > 0 && ul.scrollWidth > ul.clientWidth; i--) {
+        tags[i].hidden = true;
+        hiddenCount++;
+        more.textContent = `+${hiddenCount}`;
+      }
+    };
+    fit();
+    const ro = new ResizeObserver(fit);
+    ro.observe(ul);
+    document.fonts?.ready.then(fit); // re-fit once the web font has loaded and widths change
+    return () => ro.disconnect();
+  }, [items]);
+  return (
+    <ul className="tags tags-one" ref={ref}>
+      {items.map((t) => <li key={t} className="t">{t}</li>)}
+      <li className="more" hidden />
+    </ul>
+  );
+}
 
 function ProjectCard({ p, index, onOpen }) {
   return (
@@ -420,16 +467,13 @@ function ProjectCard({ p, index, onOpen }) {
       onPointerMove={tilt} onPointerLeave={untilt}>
       <button className="card-hit" onClick={() => onOpen(p)} aria-label={`Open ${p.title} details`} />
       <div className="card-cover" style={{ '--ha': p.hue[0], '--hb': p.hue[1] }}>
-        <Orb hue={p.hue} seed={index + 1} />
+        <Shot p={p} seed={index + 1} />
         <span className="chip">{KIND_LABEL[p.kind]}</span>
       </div>
       <div className="card-body">
         <h3>{p.title}</h3>
         <p>{p.summary}</p>
-        <ul className="tags">
-          {p.stack.slice(0, 4).map((t) => <li key={t}>{t}</li>)}
-          {p.stack.length > 4 && <li className="more">+{p.stack.length - 4}</li>}
-        </ul>
+        <FitTags items={p.stack} />
         <div className="card-foot">
           <span className="read">Case study <Icon name="arrow" size={16} /></span>
           {p.links.map((l) => (
@@ -458,8 +502,10 @@ function ProjectDialog({ project, onClose }) {
       {project && (
         <div className="pd-inner">
           <button className="icon-btn pd-close" onClick={onClose} aria-label="Close"><Icon name="close" /></button>
-          <div className="pd-head" style={{ '--ha': project.hue[0], '--hb': project.hue[1] }}>
-            <Orb hue={project.hue} seed={PROJECTS.indexOf(project) + 1} />
+          <div className="pd-shot" style={{ '--ha': project.hue[0], '--hb': project.hue[1] }}>
+            <Shot p={project} seed={PROJECTS.indexOf(project) + 1} eager />
+          </div>
+          <div className="pd-head">
             <div>
               <span className="chip">{KIND_LABEL[project.kind]}</span>
               <h3>{project.title}</h3>
