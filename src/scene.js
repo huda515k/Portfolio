@@ -157,18 +157,24 @@ export function createScene(canvas, { reducedMotion = false } = {}) {
   scene.add(points);
 
   // ---- State driven from the page ----
-  const state = { mx: 0, my: 0, tmx: 0, tmy: 0, scroll: 0, shift: 0, tShift: 0, layout: 'wide' };
+  const state = { mx: 0, my: 0, tmx: 0, tmy: 0, scroll: 0, shift: 0, tShift: 0, layout: 'side', w: 1, h: 1 };
 
-  function layoutFor(w) { return w < 700 ? 'narrow' : w < 1100 ? 'mid' : 'wide'; }
-  // The canvas is always full-screen, so size from the window, not from the canvas's
-  // CSS box. If the stylesheet arrives after this script (it can on a CDN), the canvas
-  // still has its default 300x150 size at this point and everything would render tiny.
+  // 'side'  = text on the left, core on the right (laptops, desktops, landscape tablets)
+  // 'stack' = core on top, text underneath (phones and portrait tablets)
+  function layoutFor(w, h) { return w < 700 || (w < 1100 && h > w) ? 'stack' : 'side'; }
+
+  // Measure the canvas's real on-screen box. Its size is set inline in App.jsx, so it is
+  // correct from the first frame. Falls back to the window only if it reports nothing.
+  // (On iPhone, 100vh is taller than window.innerHeight; using the canvas box keeps the
+  // drawing buffer and the CSS size identical, so the core is never stretched.)
   function resize() {
-    const w = window.innerWidth, h = window.innerHeight;
+    const w = canvas.clientWidth || window.innerWidth;
+    const h = canvas.clientHeight || window.innerHeight;
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
-    state.layout = layoutFor(w);
+    state.w = w; state.h = h;
+    state.layout = layoutFor(w, h);
   }
   resize();
 
@@ -193,18 +199,28 @@ export function createScene(canvas, { reducedMotion = false } = {}) {
 
     // hero progress 0..1 over the first screen
     const hp = Math.min(state.scroll / window.innerHeight, 1.6);
-    const baseX = state.layout === 'wide' ? 1.75 : state.layout === 'mid' ? 1.2 : 0;
-    const baseY = state.layout === 'narrow' ? 1.25 : 0.1;
-    const baseS = state.layout === 'narrow' ? 0.62 : 1;
-
+    // Place the core in SCREEN terms (fractions of the viewport), not fixed 3D units,
+    // so it sits in the same spot on every screen size and aspect ratio.
+    // visH/visW = how many world units the camera sees at depth 0.
+    const visH = 2 * Math.tan((camera.fov * Math.PI) / 360) * camera.position.z;
+    const visW = visH * camera.aspect;
+    const toWorld = visH / state.h;            // world units per CSS pixel
+    const RING = 2.7;                          // outer ring radius in world units
     const k = Math.min(hp, 1);
-    if (state.layout === 'narrow') {
+    let baseS;
+    if (state.layout === 'stack') {
+      // centred in the top ~40% of the screen, above the text (.hero padding-top: 40vh)
+      const ringPx = Math.min(state.w * 0.46, state.h * 0.175);
+      baseS = (ringPx * toWorld) / RING;
       world.position.x = 0;
-      world.position.y = baseY + k * 3.4 + state.my * -0.1;
+      world.position.y = visH * (0.5 - 0.21) + k * visH * 0.7 + state.my * -0.1;
       world.position.z = -k * 1.5;
     } else {
-      world.position.x = baseX + k * 2.7;
-      world.position.y = baseY - k * 0.5 + state.my * -0.15;
+      // centre at 72% of the width; ring sized to the smaller of width/height
+      const ringPx = Math.min(state.w * 0.23, state.h * 0.4);
+      baseS = (ringPx * toWorld) / RING;
+      world.position.x = visW * (0.72 - 0.5) + k * visW * 0.26;
+      world.position.y = visH * 0.02 - k * visH * 0.06 + state.my * -0.15;
       world.position.z = -k * 2.6;
     }
     world.scale.setScalar(baseS);
@@ -215,7 +231,7 @@ export function createScene(canvas, { reducedMotion = false } = {}) {
     coreUniforms.uTime.value = t;
     coreUniforms.uShift.value = state.shift;
     coreUniforms.uAmp.value = 0.26 + Math.sin(t * 0.5) * 0.06 + Math.abs(state.mx) * 0.08;
-    coreUniforms.uDim.value = 1 - k * (state.layout === 'narrow' ? 0.7 : 0.55);
+    coreUniforms.uDim.value = 1 - k * (state.layout === 'stack' ? 0.7 : 0.55);
     ring1.material.opacity = 0.9 - k * 0.5; ring2.material.opacity = 0.7 - k * 0.4;
 
     ring1.rotation.z = t * 0.25;

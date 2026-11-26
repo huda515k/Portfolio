@@ -155,9 +155,12 @@ function Hero() {
 function Marquee() {
   const row = [...MARQUEE, ...MARQUEE];
   return (
-    <div className="marquee" aria-label="Core technologies">
-      <div className="marquee-track">
-        {row.map((t, i) => (<span key={i}>{t}<i aria-hidden="true">✦</i></span>))}
+    // The wrapper clips the tilted band so it can never make the page wider than the screen
+    <div className="marquee-wrap">
+      <div className="marquee" aria-label="Core technologies">
+        <div className="marquee-track">
+          {row.map((t, i) => (<span key={i}>{t}<i aria-hidden="true">✦</i></span>))}
+        </div>
       </div>
     </div>
   );
